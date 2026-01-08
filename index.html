@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NISRA Accessibility Redesign | UX Design Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #03031c;
+            --bg-card: #13131a;
+            --accent-coral: #9d59ea;
+            --accent-lavender: #a78bfa;
+            --accent-mint: #6ee7b7;
+            --accent-gold: #fbbf24;
+            --text-primary: #ffffff;
+            --text-secondary: #ffffff;
+            --text-muted: #b2bdcc;
+            --border-subtle: rgba(255,255,255,0.08);
+            --gradient-hero: linear-gradient(135deg, #383231 0%, #a78bfa 50%, #6ee7b7 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-coral);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse at center, rgba(167, 139, 250, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 60%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, rgba(255, 107, 91, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(167, 139, 250, 0.15);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            border-radius: 100px;
+            font-size: 0.8rem;
+            color: var(--accent-lavender);
+            margin-bottom: 2rem;
+            width: fit-content;
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-lavender);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero-title span {
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease 0.2s forwards;
+            opacity: 0;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 4rem;
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .stat {
+            position: relative;
+        }
+
+        .stat-value {
+            font-family: 'Fraunces', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-coral);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-coral);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 4rem;
+            position: relative;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: var(--accent-coral);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--accent-coral);
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 3rem;
+        }
+
+        /* Role Section */
+        #role {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .role-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(167, 139, 250, 0.1);
+        }
+
+        .role-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .role-card h3 .icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 107, 91, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .role-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .role-list {
+            list-style: none;
+        }
+
+        .role-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .role-list li:last-child {
+            border-bottom: none;
+        }
+
+        .role-list li::before {
+            content: '→';
+            color: var(--accent-mint);
+            font-weight: 600;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .meta-item {
+            background: rgba(255,255,255,0.02);
+            padding: 1.25rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .meta-item .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-item .value {
+            font-weight: 500;
+        }
+
+        /* Problem Section */
+        #problem {
+            background: var(--bg-card);
+        }
+
+        .problem-statement {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-style: italic;
+            color: var(--text-primary);
+            padding: 3rem;
+            background: linear-gradient(135deg, rgba(255, 107, 91, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+            border-left: 4px solid var(--accent-coral);
+            border-radius: 0 24px 24px 0;
+            margin-bottom: 4rem;
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .challenge-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .challenge-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-hero);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .challenge-card:hover::before {
+            opacity: 1;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 91, 247, 0.3);
+        }
+
+        .challenge-number {
+            font-family: 'Fraunces', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: rgba(255, 107, 91, 0.2);
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--accent-coral);
+        }
+
+        .challenge-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Process Section */
+        #process {
+            background: var(--bg-dark);
+        }
+
+        .process-timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .process-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-coral) 0%, var(--accent-lavender) 50%, var(--accent-mint) 100%);
+        }
+
+        .process-step {
+            position: relative;
+            padding: 2rem 0 3rem 3rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .process-step:last-child {
+            border-bottom: none;
+        }
+
+        .process-step::before {
+            content: '';
+            position: absolute;
+            left: -3rem;
+            top: 2.5rem;
+            width: 16px;
+            height: 16px;
+            background: var(--bg-dark);
+            border: 3px solid var(--accent-coral);
+            border-radius: 50%;
+            transform: translateX(-7px);
+        }
+
+        .process-step:nth-child(2)::before { border-color: var(--accent-lavender); }
+        .process-step:nth-child(3)::before { border-color: var(--accent-mint); }
+        .process-step:nth-child(4)::before { border-color: var(--accent-gold); }
+
+        .process-step h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step .phase {
+            font-size: 0.75rem;
+            color: var(--accent-coral);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+        }
+
+        .process-step:nth-child(2) .phase { color: var(--accent-lavender); }
+        .process-step:nth-child(3) .phase { color: var(--accent-mint); }
+        .process-step:nth-child(4) .phase { color: var(--accent-gold); }
+
+        .process-step p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .process-activities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .activity-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .activity-tag:hover {
+            background: rgba(255, 107, 91, 0.15);
+            border-color: rgba(255, 107, 91, 0.3);
+            color: var(--text-primary);
+        }
+
+        /* Collaboration Section */
+        #collaboration {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+        }
+
+        .collab-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .collab-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .collab-card:hover {
+            transform: scale(1.02);
+            border-color: rgba(167, 139, 250, 0.3);
+        }
+
+        .collab-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .collab-card:nth-child(1) .collab-avatar {
+            background: linear-gradient(135deg, rgba(255, 107, 91, 0.2) 0%, rgba(255, 107, 91, 0.1) 100%);
+        }
+
+        .collab-card:nth-child(2) .collab-avatar {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.2) 0%, rgba(167, 139, 250, 0.1) 100%);
+        }
+
+        .collab-card:nth-child(3) .collab-avatar {
+            background: linear-gradient(135deg, rgba(110, 231, 183, 0.2) 0%, rgba(110, 231, 183, 0.1) 100%);
+        }
+
+        .collab-card h4 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .collab-card .role {
+            font-size: 0.8rem;
+            color: var(--accent-lavender);
+            margin-bottom: 1rem;
+        }
+
+        .collab-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Solutions Section */
+        #solutions {
+            background: var(--bg-card);
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .solution-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+        }
+
+        .solution-visual {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card:nth-child(1) .solution-visual {
+            background: linear-gradient(135deg, rgba(255, 107, 91, 0.15) 0%, rgba(255, 107, 91, 0.05) 100%);
+        }
+
+        .solution-card:nth-child(2) .solution-visual {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(167, 139, 250, 0.05) 100%);
+        }
+
+        .solution-card:nth-child(3) .solution-visual {
+            background: linear-gradient(135deg, rgba(110, 231, 183, 0.15) 0%, rgba(110, 231, 183, 0.05) 100%);
+        }
+
+        .solution-card:nth-child(4) .solution-visual {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+        }
+
+        .solution-demo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .text-resize-demo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .text-resize-demo span:nth-child(1) { font-size: 0.875rem; color: var(--text-muted); }
+        .text-resize-demo span:nth-child(2) { font-size: 1.25rem; color: var(--text-secondary); }
+        .text-resize-demo span:nth-child(3) { font-size: 1.75rem; color: var(--text-primary); }
+
+        .contrast-demo {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .contrast-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .contrast-swatch.fail {
+            background: #8a8a8a;
+            color: #eeeeee;
+        }
+
+        .contrast-swatch.pass {
+            background: #4f4f4f;
+            color: #eeeeee;
+        }
+
+        .form-demo {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            width: 200px;
+        }
+
+        .form-demo label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--accent-mint);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-demo input {
+            width: 100%;
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .solution-content {
+            padding: 2rem;
+        }
+
+        .solution-content h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .solution-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .solution-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(110, 231, 183, 0.15);
+            color: var(--accent-mint);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* Results Section */
+        #results {
+            background: var(--bg-dark);
+            text-align: center;
+        }
+
+        .results-hero {
+            display: flex;
+            justify-content: center;
+            gap: 6rem;
+            margin-bottom: 4rem;
+        }
+
+        .result-item {
+            text-align: center;
+        }
+
+        .result-value {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(4rem, 8vw, 6rem);
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-item:nth-child(1) .result-value { color: var(--accent-coral); }
+        .result-item:nth-child(2) .result-value { color: var(--accent-lavender); }
+        .result-item:nth-child(3) .result-value { color: var(--accent-mint); }
+
+        .result-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .testimonial {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            font-family: 'Fraunces', serif;
+            font-size: 6rem;
+            color: var(--accent-coral);
+            opacity: 0.2;
+            position: absolute;
+            top: 0.5rem;
+            left: 1.5rem;
+            line-height: 1;
+        }
+
+        .testimonial p {
+            font-style: italic;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Learnings Section */
+        #learnings {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-card) 100%);
+        }
+
+        .learnings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .learning-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .learning-card h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .learning-card h4 .emoji {
+            font-size: 1.5rem;
+        }
+
+        .learning-card ul {
+            list-style: none;
+        }
+
+        .learning-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .learning-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-mint);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            padding: 4rem;
+            text-align: center;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-cta {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        .footer-link {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 100px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            background: var(--accent-coral);
+            border-color: var(--accent-coral);
+        }
+
+        .footer-link.primary {
+            background: var(--gradient-hero);
+            border: none;
+        }
+
+        .footer-link.primary:hover {
+            transform: scale(1.05);
+        }
+
+        /* Before/After Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .comparison-side {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .comparison-side h5 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comparison-side.before h5 {
+            color: var(--accent-coral);
+        }
+
+        .comparison-side.after h5 {
+            color: var(--accent-mint);
+        }
+
+        .comparison-side ul {
+            list-style: none;
+        }
+
+        .comparison-side li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .comparison-side li:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-side.before li::before {
+            content: '✗';
+            color: var(--accent-coral);
+        }
+
+        .comparison-side.after li::before {
+            content: '✓';
+            color: var(--accent-mint);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            section {
+                padding: 4rem 2rem;
+            }
+
+            .hero {
+                padding: 6rem 2rem 4rem;
+            }
+
+            .role-grid,
+            .solutions-grid,
+            .learnings-grid,
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .challenges-grid,
+            .collab-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 2rem;
+            }
+
+            .results-hero {
+                flex-direction: column;
+                gap: 3rem;
+            }
+
+            .testimonials {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">NISRA Case Study</div>
+        <ul class="nav-links">
+            <li><a href="#role">My Role</a></li>
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+            <li><a href="#results">Results</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">Katrina Peli| UX Design Presentation</div>
+        <h1 class="hero-title">Redesigning <span>NISRA</span> for<br>Visual Accessibility</h1>
+        <p class="hero-subtitle">How I transformed a recreation website into an inclusive experience, increasing program sign-ups by 20% through user-centered design solutions.</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value">+20%</div>
+                <div class="stat-label">Sign-up Increase</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">85%</div>
+                <div class="stat-label">Easier to Use</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">100%</div>
+                <div class="stat-label">WCAG Compliant</div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <section id="role">
+        <div class="section-label">My Role</div>
+        <h2 class="section-title">UX Designer</h2>
+        <p class="section-desc">I led the end-to-end design process, from initial research synthesis to final implementation specifications, collaborating closely with stakeholders to deliver accessible design solutions.</p>
+        
+        <div class="role-grid">
+            <div class="role-card reveal">
+                <h3><span class="icon">🎨</span> Design Responsibilities</h3>
+                <p>I owned the design process from research insights to final deliverables:</p>
+                <ul class="role-list">
+                    <li>Synthesized user research into actionable design requirements</li>
+                    <li>Created user personas and journey maps to guide design decisions</li>
+                    <li>Developed a compliant color system meeting WCAG 2.0 AA standards</li>
+                    <li>Designed clear, screen-reader-friendly form labels</li>
+                    <li>Created text resize controls for user customization</li>
+                    <li>Led usability testing and iterated based on feedback</li>
+                    <li>Delivered design specifications to the development team</li>
+                </ul>
+            </div>
+            
+            <div class="role-card reveal">
+                <h3><span class="icon">📋</span> Project Details</h3>
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <div class="label">Timeline</div>
+                        <div class="value">May 2019 – Aug 2020</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="label">Team</div>
+                        <div class="value">1 Marketing Directorr, 1 Developer </div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="label">Tools</div>
+                        <div class="value">Figma, Miro, WebAIM</div>
+                    </div>
+                    <div class="meta-item">
+                        <div class="label">Methods</div>
+                        <div class="value">User Testing, Audits</div>
+                    </div>
+                </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="problem">
+        <div class="section-label">The Problem</div>
+        <h2 class="section-title">An Inaccessible Experience</h2>
+        
+        <div class="problem-statement reveal">
+            "How might we redesign the NISRA website so users with visual impairments can read content, navigate pages, and complete sign-ups independently?"
+        </div>
+        
+        <div class="challenges-grid">
+            <div class="challenge-card reveal">
+                <div class="challenge-number">01</div>
+                <h4>Small Text Size</h4>
+                <p>Users with low vision couldn't read program details or form fields, requiring assistance for basic tasks. No option to resize text existed.</p>
+            </div>
+            <div class="challenge-card reveal">
+                <div class="challenge-number">02</div>
+                <h4>Poor Color Contrast</h4>
+                <p>Text blended into backgrounds, failing WCAG standards (2.97:1 vs required 4.5:1). Users described it as "straining to read."</p>
+            </div>
+            <div class="challenge-card reveal">
+                <div class="challenge-number">03</div>
+                <h4>Unclear Form Labels</h4>
+                <p>Sign-up fields lacked descriptive labels, causing confusion and screen reader incompatibility. Users called it "a guessing game."</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="collaboration">
+        <div class="section-label">Stakeholder Collaboration</div>
+        <h2 class="section-title">Working with the Team</h2>
+        <p class="section-desc">I collaborated closely with stakeholders to align design decisions with organizational goals and technical capabilities.</p>
+        
+        <div class="collab-grid">
+            <div class="collab-card reveal">
+                <div class="collab-avatar">👤</div>
+                <h4>Marketing Director</h4>
+                <div class="role">Strategy & Goals</div>
+                <p>I presented research findings and secured buy-in by connecting accessibility improvements to NISRA's mission of inclusion. Together, we prioritized features based on user impact and business goals.</p>
+            </div>
+            <div class="collab-card reveal">
+                <div class="collab-avatar">💻</div>
+                <h4>Web Developer</h4>
+                <div class="role">Implementation Partner</div>
+                <p>I created detailed design specifications and worked through technical constraints. We collaborated on implementing the text resize feature and ensuring proper form label associations.</p>
+            </div>
+            <div class="collab-card reveal">
+                <div class="collab-avatar">👥</div>
+                <h4>End Users</h4>
+                <div class="role">Validation & Feedback</div>
+                <p>I conducted usability testing sessions with 10 visually impaired users, gathering direct feedback to iterate on designs and validate that solutions met real needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="process">
+        <div class="section-label">Design Process</div>
+        <h2 class="section-title">From Research to Implementation</h2>
+        <p class="section-desc">I followed a user-centered design process, ensuring every design decision was grounded in research and validated through testing.</p>
+        
+        <div class="process-timeline">
+            <div class="process-step reveal">
+                <div class="phase">Phase 1 — Discover</div>
+                <h4>Research Synthesis</h4>
+                <p>I analyzed research data from contextual inquiries and interviews to identify key accessibility barriers and user needs.</p>
+                <div class="process-activities">
+                    <span class="activity-tag">Competitive Analysis</span>
+                    <span class="activity-tag">Affinity Mapping</span>
+                    <span class="activity-tag">WCAG Audit</span>
+                    <span class="activity-tag">User Interviews</span>
+                </div>
+            </div>
+            
+            <div class="process-step reveal">
+                <div class="phase">Phase 2 — Define</div>
+                <h4>User Modeling</h4>
+                <p>I created personas and journey maps to communicate user needs to stakeholders and guide design decisions throughout the project.</p>
+                <div class="process-activities">
+                    <span class="activity-tag">User Personas</span>
+                    <span class="activity-tag">Journey Mapping</span>
+                    <span class="activity-tag">Problem Framing</span>
+                    <span class="activity-tag">Design Requirements</span>
+                </div>
+            </div>
+            
+            <div class="process-step reveal">
+                <div class="phase">Phase 3 — Design</div>
+                <h4>Solution Development</h4>
+                <p>I designed accessible UI solutions in Figma, including a new color system, form components, and text resize controls—all meeting WCAG 2.0 AA standards.</p>
+                <div class="process-activities">
+                    <span class="activity-tag">Color System Design</span>
+                    <span class="activity-tag">Form Component Design</span>
+                    <span class="activity-tag">Text Resize UI</span>
+                    <span class="activity-tag">Figma Prototypes</span>
+                </div>
+            </div>
+            
+            <div class="process-step reveal">
+                <div class="phase">Phase 4 — Validate</div>
+                <h4>Testing and Iteration</h4>
+                <p>I led usability testing with 5 participants, identified remaining pain points, and iterated on designs before final handoff to development.</p>
+                <div class="process-activities">
+                    <span class="activity-tag">Usability Testing</span>
+                    <span class="activity-tag">Design Iteration</span>
+                    <span class="activity-tag">Developer Handoff</span>
+                    <span class="activity-tag">Implementation Support</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solutions">
+        <div class="section-label">Design Solutions</div>
+        <h2 class="section-title">What I Created</h2>
+        <p class="section-desc">Based on research insights, I designed and implemented these key accessibility improvements:</p>
+        
+        <div class="solutions-grid">
+            <div class="solution-card reveal">
+                <div class="solution-visual">
+                    <div class="text-resize-demo">
+                        <span>Aa</span>
+                        <span>Aa</span>
+                        <span>Aa</span>
+                    </div>
+                </div>
+                <div class="solution-content">
+                    <h4>Text Resize Controls</h4>
+                    <p>I designed an intuitive "Resize Text" button with clear labeling, allowing users to adjust text size without relying on browser zoom.</p>
+                    <span class="solution-tag">User Control</span>
+                </div>
+            </div>
+            
+            <div class="solution-card reveal">
+                <div class="solution-visual">
+                    <div class="contrast-demo">
+                        <div class="contrast-swatch fail">2.97:1<br>FAIL</div>
+                        <span style="font-size: 2rem;">→</span>
+                        <div class="contrast-swatch pass">7.05:1<br>PASS</div>
+                    </div>
+                </div>
+                <div class="solution-content">
+                    <h4>Accessible Color System</h4>
+                    <p>I redesigned the entire color palette using WebAIM's Contrast Checker, achieving 4.5:1+ ratios for all text elements.</p>
+                    <span class="solution-tag">WCAG 2.0 AA Compliant</span>
+                </div>
+            </div>
+            
+            <div class="solution-card reveal">
+                <div class="solution-visual">
+                    <div class="form-demo">
+                        <label for="demo-email">Email Address *</label>
+                        <input type="email" id="demo-email" placeholder="Enter your email">
+                    </div>
+                </div>
+                <div class="solution-content">
+                    <h4>Clear Form Labels</h4>
+                    <p>I redesigned all form fields with descriptive, visible labels properly associated with inputs for screen reader compatibility.</p>
+                    <span class="solution-tag">Screen Reader Friendly</span>
+                </div>
+            </div>
+            
+            <div class="solution-card reveal">
+                <div class="solution-visual">
+                    <div style="font-size: 3rem;">📋</div>
+                </div>
+                <div class="solution-content">
+                    <h4>Design Documentation</h4>
+                    <p>I created comprehensive design specifications for the developer, including color values, spacing guidelines, and implementation notes.</p>
+                    <span class="solution-tag">Developer Handoff</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison reveal">
+            <div class="comparison-side before">
+                <h5>✗ Before My Redesign</h5>
+                <ul>
+                    <li>Text too small to read comfortably</li>
+                    <li>Contrast ratio: 2.5-3.2:1 (failed WCAG)</li>
+                    <li>Form fields had missing or vague labels</li>
+                    <li>Screen readers couldn't interpret forms</li>
+                    <li>Users required assistance to complete sign-ups</li>
+                </ul>
+            </div>
+            <div class="comparison-side after">
+                <h5>✓ After My Redesign</h5>
+                <ul>
+                    <li>Text resize option gives users control</li>
+                    <li>Contrast ratio: 4.5:1+ (meets WCAG AA)</li>
+                    <li>All form fields clearly labeled and described</li>
+                    <li>Screen reader compatible throughout</li>
+                    <li>Users complete sign-ups independently</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="results">
+        <div class="section-label">Impact</div>
+        <h2 class="section-title">Results and Outcomes</h2>
+        
+        <div class="results-hero reveal">
+            <div class="result-item">
+                <div class="result-value">+20%</div>
+                <div class="result-label">Increase in Sign-ups</div>
+            </div>
+            <div class="result-item">
+                <div class="result-value">85%</div>
+                <div class="result-label">Found Site Easier to Use</div>
+            </div>
+            <div class="result-item">
+                <div class="result-value">100%</div>
+                <div class="result-label">WCAG 2.0 AA Compliance</div>
+            </div>
+        </div>
+        
+        <div class="testimonials reveal">
+            <div class="testimonial">
+                <p>The larger text made everything easier to read.</p>
+            </div>
+            <div class="testimonial">
+                <p>I was finally able to sign up without needing help.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="learnings">
+        <div class="section-label">Reflection</div>
+        <h2 class="section-title">What I Learned</h2>
+        
+        <div class="learnings-grid">
+            <div class="learning-card reveal">
+                <h4><span class="emoji">💡</span> Key Takeaways</h4>
+                <ul>
+                    <li>Accessibility improvements drive measurable business outcomes</li>
+                    <li>Direct user feedback is essential for validating design decisions</li>
+                    <li>Iterative testing catches issues early and saves development time</li>
+                    <li>Stakeholder buy-in requires connecting design to organizational mission</li>
+                </ul>
+            </div>
+            
+            <div class="learning-card reveal">
+                <h4>What I'd Do Differently</h4>
+                <ul>
+                    <li>Test with a larger, more diverse sample of visual impairments</li>
+                    <li>Partner with accessibility specialists for expert validation</li>
+                    <li>Test on multiple screen readers (JAWS, NVDA, VoiceOver)</li>
+                    <li>Build accessibility audits into ongoing design workflow</li>
+                </ul>
+            </div>
+            
+            <div class="learning-card reveal">
+                <h4>Recommended Next Steps</h4>
+                <ul>
+                    <li>Conduct quarterly accessibility audits as site evolves</li>
+                    <li>Expand to keyboard navigation and focus indicators</li>
+                    <li>Implement user feedback mechanism for accessibility issues</li>
+                    <li>Train content creators on maintaining accessibility</li>
+                </ul>
+            </div>
+            
+            <div class="learning-card reveal">
+                <h4> Tools & Skills Used</h4>
+                <ul>
+                    <li>Figma for UI design and prototyping</li>
+                    <li>WebAIM Contrast Checker for color validation</li>
+                    <li>Miro for journey mapping and affinity diagramming</li>
+                    <li>Zoom for remote usability testing sessions</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <h3 class="footer-cta">  Let's Connect! </h3>
+            <a href="https://katrinapeli.notion.site/UX-Design-Portfolio-Katrina-Peli-2e2359f311d380c38633f47d999b8e8b?source=copy_link" class="footer-link">View More for Detailed Case Studies</a>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll reveal animation
+        const reveals = document.querySelectorAll('.reveal');
+        
+        const revealOnScroll = () => {
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const revealTop = el.getBoundingClientRect().top;
+                const revealPoint = 150;
+                
+                if (revealTop < windowHeight - revealPoint) {
+                    el.classList.add('active');
+                }
+            });
+        };
+        
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+        
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
